@@ -11,7 +11,9 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-app.use(cors());
+// Use CORS middleware with the specified origin
+app.use(cors({ origin: 'https://hardware-inventory-management.vercel.app' }));
+
 app.use(express.json());
 
 app.use('/api/hardware', hardwareRoutes);
