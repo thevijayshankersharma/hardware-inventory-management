@@ -1,18 +1,22 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Use environment variable for API URL or fallback to production URL
+const API_URL = process.env.REACT_APP_API_URL || 'https://hardware-inventory-management.onrender.com/api';
 
+// Create an Axios instance with the base URL
 const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add token to headers for authorization
+// Intercept requests to include the token for authorization, if available
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 // Generic request function with error handling
@@ -23,9 +27,10 @@ const request = async (method, url, data = null) => {
       url,
       data,
     });
-    return response.data;
+    return response.data; // Return the response data
   } catch (error) {
-    throw new Error(error.response.data.message || 'Request failed');
+    const errorMessage = error.response?.data?.message || 'Request failed';
+    throw new Error(errorMessage); // Handle errors gracefully
   }
 };
 
