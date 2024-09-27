@@ -16,7 +16,7 @@
     "routes": [
       {
         "src": "/api/(.*)",
-        "dest": "Backend/routes/$1" // Change this according to your actual routes
+        "dest": "Backend/routes/$1"
       },
       {
         "src": "/(.*)",
