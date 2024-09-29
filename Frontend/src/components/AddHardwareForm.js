@@ -46,7 +46,9 @@ export default function AddHardwareForm({ onAdd }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white rounded shadow-md">
+      <h3 className="text-xl font-semibold mb-4">Add New Hardware</h3>
+      
       <Input
         type="text"
         name="name"
@@ -54,7 +56,9 @@ export default function AddHardwareForm({ onAdd }) {
         onChange={handleChange}
         placeholder="Hardware Name"
         required
+        className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
+      
       <Input
         type="text"
         name="type"
@@ -62,7 +66,9 @@ export default function AddHardwareForm({ onAdd }) {
         onChange={handleChange}
         placeholder="Hardware Type"
         required
+        className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
+      
       <Input
         type="text"
         name="serialNumber"
@@ -70,9 +76,16 @@ export default function AddHardwareForm({ onAdd }) {
         onChange={handleChange}
         placeholder="Serial Number"
         required
+        className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <Select name="status" value={hardware.status} onValueChange={(value) => setHardware({ ...hardware, status: value })}>
-        <SelectTrigger>
+      
+      <Select 
+        name="status" 
+        value={hardware.status} 
+        onValueChange={(value) => setHardware({ ...hardware, status: value })}
+        className="border border-gray-300 rounded"
+      >
+        <SelectTrigger className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
           <SelectValue placeholder="Select status" />
         </SelectTrigger>
         <SelectContent>
@@ -81,21 +94,35 @@ export default function AddHardwareForm({ onAdd }) {
           <SelectItem value="Under Maintenance">Under Maintenance</SelectItem>
         </SelectContent>
       </Select>
+      
       <Input
         type="text"
         name="location"
         value={hardware.location}
         onChange={handleChange}
         placeholder="Location"
+        className="border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <div className="flex space-x-2">
-        <Button type="submit" disabled={loading}>
+      
+      <div className="flex space-x-2 mt-4">
+        <Button 
+          type="submit" 
+          disabled={loading} 
+          className="flex-1 bg-blue-500 text-white hover:bg-blue-600 transition duration-200"
+        >
           {loading ? 'Adding...' : 'Add Hardware'}
         </Button>
-        <Button type="button" onClick={handleClear}>Clear</Button>
+        <Button 
+          type="button" 
+          onClick={handleClear} 
+          className="flex-1 bg-gray-300 hover:bg-gray-400 transition duration-200"
+        >
+          Clear
+        </Button>
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-      {success && <p className="text-green-500">{success}</p>}
+
+      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {success && <p className="text-green-500 mt-2">{success}</p>}
     </form>
   );
 }

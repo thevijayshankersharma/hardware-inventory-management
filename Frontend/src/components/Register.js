@@ -32,8 +32,9 @@ export default function Register() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <h2 className="mb-4 text-2xl font-semibold">Register</h2>
+      <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 bg-white p-6 rounded-lg shadow-md">
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
           <Input
@@ -58,13 +59,15 @@ export default function Register() {
             required
           />
         </div>
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? 'Registering...' : 'Register'}
         </Button>
         {error && <p className="text-red-500">{error}</p>}
       </form>
       <div className="mt-4">
-        <p>Already have an account? <Button onClick={() => navigate('/login')}>Login</Button></p>
+        <p>Already have an account? 
+          <Button onClick={() => navigate('/login')} className="ml-1">Login</Button>
+        </p>
       </div>
     </div>
   );

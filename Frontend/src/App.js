@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Home from './components/Home'; // Import Home component
+import Home from './components/Home';
 import Login from './components/Login';
-import Register from './components/Register'; // Import Register component
+import Register from './components/Register';
 import HardwareList from './components/HardwareList';
 import BarcodeScanner from './components/BarcodeScanner';
 import { Button } from "./components/ui/button";
-import './App.css';
+
+const Header = ({ isLoggedIn, onLogout }) => (
+  <header className="bg-blue-600 text-white p-4 flex justify-between items-center">
+    <h1 className="text-2xl">MP Police Hardware Inventory Management</h1>
+    {isLoggedIn && <Button onClick={onLogout} className="bg-red-500 hover:bg-red-600">Logout</Button>}
+  </header>
+);
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Check if the user is already logged in by verifying the token
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -19,12 +24,10 @@ function App() {
     }
   }, []);
 
-  // Handle user login
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
 
-  // Handle user logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
@@ -33,34 +36,20 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* Header with conditional Login and Logout buttons */}
-        <header className="App-header">
-          <h1>MP Police Hardware Inventory Management</h1>
-          {isLoggedIn && <Button onClick={handleLogout}>Logout</Button>}
-        </header>
-        <main>
-          {/* Routes */}
+        <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+        <main className="p-4">
           <Routes>
-            {/* Redirect to hardware page if logged in, otherwise show Home */}
             <Route path="/" element={isLoggedIn ? <Navigate to="/hardware" replace /> : <Home />} />
-            
-            {/* Login route */}
             <Route path="/login" element={<Login onLogin={handleLogin} />} />
-
-            {/* Registration route */}
             <Route path="/register" element={<Register />} />
-
-            {/* Hardware section, available only if logged in */}
-            <Route path="/hardware" element={
-              isLoggedIn ? (
-                <>
-                  <HardwareList />
-                  <BarcodeScanner onDetected={(code) => console.log('Detected:', code)} />
-                </>
-              ) : (
-                <Navigate to="/" replace /> // Redirect to Home if not logged in
-              )
-            } />
+            <Route path="/hardware" element={isLoggedIn ? (
+              <>
+                <HardwareList />
+                <BarcodeScanner onDetected={(code) => console.log('Detected:', code)} />
+              </>
+            ) : (
+              <Navigate to="/" replace />
+            )} />
           </Routes>
         </main>
       </div>

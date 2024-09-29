@@ -1,22 +1,15 @@
+/* src/App.css */
+
+/* Optional: General styles that may still be needed */
 .App {
   text-align: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 main {
-  padding: 20px;
+  padding: 20px; /* This can be managed with Tailwind's padding classes */
 }
 
+/* Form styles can be handled with Tailwind in components */
 form {
   display: flex;
   flex-direction: column;
@@ -24,18 +17,7 @@ form {
   margin-bottom: 20px;
 }
 
-input, select {
-  margin: 10px 0;
-  padding: 5px;
-  width: 300px;
-}
-
-button {
-  margin: 10px 0;
-  padding: 10px;
-  width: 150px;
-}
-
+/* Table styles can be managed with Tailwind as well */
 table {
   width: 100%;
   border-collapse: collapse;

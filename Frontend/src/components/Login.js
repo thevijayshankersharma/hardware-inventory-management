@@ -34,40 +34,45 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-        <Input
-          id="username"
-          type="text"
-          name="username"
-          value={credentials.username}
-          onChange={handleChange}
-          placeholder="Username"
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-        <Input
-          id="password"
-          type="password"
-          name="password"
-          value={credentials.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-        />
-      </div>
-      <Button type="submit" disabled={loading}>
-        {loading ? 'Logging in...' : 'Login'}
-      </Button>
-      {error && <p className="text-red-500">{error}</p>}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-md shadow-md space-y-4 w-96">
+        <h2 className="text-lg font-semibold text-center">Login</h2>
+        <div>
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+          <Input
+            id="username"
+            type="text"
+            name="username"
+            value={credentials.username}
+            onChange={handleChange}
+            placeholder="Username"
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+          />
+        </div>
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <Input
+            id="password"
+            type="password"
+            name="password"
+            value={credentials.password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+          />
+        </div>
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading ? 'Logging in...' : 'Login'}
+        </Button>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      {/* Link to registration page */}
-      <p>
-        Don't have an account? <Link to="/register" className="text-blue-500">Register here</Link>
-      </p>
-    </form>
+        {/* Link to registration page */}
+        <p className="text-sm text-center">
+          Don't have an account? <Link to="/register" className="text-blue-500 hover:underline">Register here</Link>
+        </p>
+      </form>
+    </div>
   );
 }

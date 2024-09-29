@@ -43,9 +43,16 @@ export default function BarcodeScanner({ onDetected }) {
   }, [onDetected]);
 
   return (
-    <div>
-      {error && <p className="text-red-500">{error}</p>}
-      <div id="scanner-container" style={{ width: '100%', maxWidth: '640px', height: '480px' }}></div>
+    <div className="flex flex-col items-center">
+      {error && <p className="text-red-500 font-semibold mb-2">{error}</p>}
+      <div
+        id="scanner-container"
+        className="border border-gray-300 rounded-lg shadow-md mb-4"
+        style={{ width: '100%', maxWidth: '640px', height: '480px' }}
+      ></div>
+      <p className="text-gray-600 text-sm text-center">
+        Point the camera at the barcode to scan it.
+      </p>
     </div>
   );
 }

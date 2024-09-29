@@ -43,39 +43,50 @@ export default function HardwareList() {
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">MP Police Hardware Inventory Management</h2>
-      <Button onClick={() => setIsAdding(true)}>Add Hardware</Button>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h2 className="text-3xl font-bold mb-4 text-gray-800">MP Police Hardware Inventory Management</h2>
+      <Button 
+        onClick={() => setIsAdding(true)} 
+        className="mb-4 bg-blue-500 text-white hover:bg-blue-600 transition duration-200"
+      >
+        Add Hardware
+      </Button>
 
       {/* Show form only when adding */}
       {isAdding && <AddHardwareForm onAdd={handleAdd} />}
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-gray-600">Loading...</p>
       ) : hardware.length === 0 ? (
-        <p>No hardware items available.</p>
+        <p className="text-gray-600">No hardware items available.</p>
       ) : (
-        <Table>
+        <Table className="border border-gray-200">
           <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Serial Number</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Actions</TableHead>
+            <TableRow className="bg-gray-100">
+              <TableHead className="text-left p-3 text-gray-700">Name</TableHead>
+              <TableHead className="text-left p-3 text-gray-700">Type</TableHead>
+              <TableHead className="text-left p-3 text-gray-700">Serial Number</TableHead>
+              <TableHead className="text-left p-3 text-gray-700">Status</TableHead>
+              <TableHead className="text-left p-3 text-gray-700">Location</TableHead>
+              <TableHead className="text-left p-3 text-gray-700">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {hardware.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.type}</TableCell>
-                <TableCell>{item.serialNumber}</TableCell>
-                <TableCell>{item.status}</TableCell>
-                <TableCell>{item.location}</TableCell>
-                <TableCell>
-                  <Button variant="destructive" onClick={() => handleDelete(item._id)}>Delete</Button>
+              <TableRow key={item._id} className="border-b hover:bg-gray-50">
+                <TableCell className="p-3">{item.name}</TableCell>
+                <TableCell className="p-3">{item.type}</TableCell>
+                <TableCell className="p-3">{item.serialNumber}</TableCell>
+                <TableCell className="p-3">{item.status}</TableCell>
+                <TableCell className="p-3">{item.location}</TableCell>
+                <TableCell className="p-3">
+                  <Button 
+                    variant="destructive" 
+                    onClick={() => handleDelete(item._id)} 
+                    className="bg-red-500 text-white hover:bg-red-600 transition duration-200"
+                  >
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
