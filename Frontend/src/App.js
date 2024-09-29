@@ -5,14 +5,6 @@ import Login from './components/Login';
 import Register from './components/Register';
 import HardwareList from './components/HardwareList';
 import BarcodeScanner from './components/BarcodeScanner';
-import { Button } from "./components/ui/button";
-
-const Header = ({ isLoggedIn, onLogout }) => (
-  <header className="bg-blue-600 text-white p-4 flex justify-between items-center">
-    <h1 className="text-2xl">MP Police Hardware Inventory Management</h1>
-    {isLoggedIn && <Button onClick={onLogout} className="bg-red-500 hover:bg-red-600">Logout</Button>}
-  </header>
-);
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,20 +27,16 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
-        <main className="p-4">
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-grow">
           <Routes>
-            <Route path="/" element={isLoggedIn ? <Navigate to="/hardware" replace /> : <Home />} />
+            <Route path="/" element={<Home isLoggedIn={isLoggedIn} onLogout={handleLogout} />} />
             <Route path="/login" element={<Login onLogin={handleLogin} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/hardware" element={isLoggedIn ? (
-              <>
-                <HardwareList />
-                <BarcodeScanner onDetected={(code) => console.log('Detected:', code)} />
-              </>
+              <HardwareList onLogout={handleLogout} />
             ) : (
-              <Navigate to="/" replace />
+              <Navigate to="/hardware" replace />
             )} />
           </Routes>
         </main>
