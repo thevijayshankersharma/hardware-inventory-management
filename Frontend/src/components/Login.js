@@ -6,7 +6,7 @@ import { Input } from "./ui/input";
 import { login } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Loader2, LogIn } from "lucide-react";
+import { Loader2, LogIn, Eye, EyeOff } from "lucide-react"; // Import Eye and EyeOff icons
 import { useToast } from "./ui/use-toast";
 
 export default function Login({ onLogin }) {
@@ -15,6 +15,7 @@ export default function Login({ onLogin }) {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -91,16 +92,29 @@ export default function Login({ onLogin }) {
               >
                 Password
               </label>
-              <Input
-                id="password"
-                type="password"
-                name="password"
-                value={credentials.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                required
-                className="w-full"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"} // Toggle password visibility
+                  name="password"
+                  value={credentials.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  required
+                  className="w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-500" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-500" />
+                  )}
+                </button>
+              </div>
             </div>
             <Button
               type="submit"
