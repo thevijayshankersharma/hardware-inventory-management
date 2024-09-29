@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { login } from '../services/api';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+"use client";
+
+import React, { useState } from "react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { login } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Loader2, LogIn } from "lucide-react";
+import { useToast } from "./ui/use-toast";
 
 export default function Login({ onLogin }) {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -18,61 +25,107 @@ export default function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
       const data = await login(credentials);
-      localStorage.setItem('token', data.token);
-      onLogin(); // Update the logged-in state
-      navigate('/hardware'); // Redirect to the hardware page
+      localStorage.setItem("token", data.token);
+      onLogin();
+      navigate("/hardware");
+      toast({
+        title: "Success",
+        description: "You have successfully logged in.",
+      });
     } catch (error) {
-      console.error('Login failed:', error);
-      setError('Login failed. Please check your credentials and try again.');
+      console.error("Login failed:", error);
+      toast({
+        title: "Error",
+        description:
+          "Login failed. Please check your credentials and try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-md shadow-md space-y-4 w-96">
-        <h2 className="text-lg font-semibold text-center">Login</h2>
-        <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-          <Input
-            id="username"
-            type="text"
-            name="username"
-            value={credentials.username}
-            onChange={handleChange}
-            placeholder="Username"
-            required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-          <Input
-            id="password"
-            type="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-            placeholder="Password"
-            required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-          />
-        </div>
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? 'Logging in...' : 'Login'}
-        </Button>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        {/* Link to registration page */}
-        <p className="text-sm text-center">
-          Don't have an account? <Link to="/register" className="text-blue-500 hover:underline">Register here</Link>
-        </p>
-      </form>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"
+    >
+      <div className="w-full max-w-md">
+        <motion.div
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="bg-white p-8 rounded-lg shadow-2xl space-y-6"
+        >
+          <h2 className="text-3xl font-bold text-center text-blue-800 mb-6">
+            Login
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Username
+              </label>
+              <Input
+                id="username"
+                type="text"
+                name="username"
+                value={credentials.username}
+                onChange={handleChange}
+                placeholder="Enter your username"
+                required
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                name="password"
+                value={credentials.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                required
+                className="w-full"
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200"
+            >
+              {loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <LogIn className="mr-2 h-4 w-4" />
+              )}
+              {loading ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+          <p className="text-sm text-center text-gray-600">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              Register here
+            </Link>
+          </p>
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
