@@ -38,7 +38,7 @@ function App() {
               <Route path="/hardware" element={isLoggedIn ? (
                 <HardwareList onLogout={handleLogout} />
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/login" replace />
               )} />
             </Routes>
           </main>

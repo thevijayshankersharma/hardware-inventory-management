@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { getHardware, deleteHardware } from '../services/api';
 import AddHardwareForm from './AddHardwareForm';
 
-export default function HardwareList() {
+export default function HardwareList({ onLogout }) {
   const [hardware, setHardware] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchHardware();
@@ -42,9 +44,26 @@ export default function HardwareList() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    onLogout();
+    navigate('/login');
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold mb-4 text-gray-800">MP Police Hardware Inventory Management</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-3xl font-bold text-gray-800">
+          MP Police Hardware Inventory Management
+        </h2>
+        <Button 
+          onClick={handleLogout} 
+          className="bg-red-500 text-white hover:bg-red-600 transition duration-200"
+        >
+          Logout
+        </Button>
+      </div>
+
       <Button 
         onClick={() => setIsAdding(true)} 
         className="mb-4 bg-blue-500 text-white hover:bg-blue-600 transition duration-200"
