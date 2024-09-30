@@ -16,7 +16,7 @@ const hardwareSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Available', 'In Use', 'Under Maintenance'],
+    enum: ['Available', 'In Use', 'Under Maintenance', 'Out of Service'],
     default: 'Available'
   },
   location: String,

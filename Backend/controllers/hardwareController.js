@@ -24,17 +24,47 @@ exports.getHardwareById = async (req, res) => {
 
 exports.createHardware = async (req, res) => {
   try {
-    const hardware = new Hardware(req.body);
+    const { name, type, serialNumber, status, location } = req.body;
+    
+    if (!name || !type || !serialNumber) {
+      return res.status(400).json({ message: 'Name, type, and serial number are required fields' });
+    }
+
+    const existingHardware = await Hardware.findOne({ serialNumber });
+    if (existingHardware) {
+      return res.status(400).json({ message: 'A hardware item with this serial number already exists' });
+    }
+
+    const hardware = new Hardware({
+      name,
+      type,
+      serialNumber,
+      status: status || 'Available',
+      location
+    });
+
     await hardware.save();
     res.status(201).json(hardware);
   } catch (error) {
+    console.error('Error creating hardware:', error);
     res.status(400).json({ message: 'Error creating hardware', error: error.message });
   }
 };
 
 exports.updateHardware = async (req, res) => {
   try {
-    const hardware = await Hardware.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { name, type, serialNumber, status, location } = req.body;
+    
+    if (!name || !type || !serialNumber) {
+      return res.status(400).json({ message: 'Name, type, and serial number are required fields' });
+    }
+
+    const hardware = await Hardware.findByIdAndUpdate(
+      req.params.id, 
+      { name, type, serialNumber, status, location },
+      { new: true, runValidators: true }
+    );
+
     if (hardware) {
       res.json(hardware);
     } else {
@@ -49,7 +79,7 @@ exports.deleteHardware = async (req, res) => {
   try {
     const hardware = await Hardware.findByIdAndDelete(req.params.id);
     if (hardware) {
-      res.status(204).send("Hardware deleted");
+      res.status(204).send();
     } else {
       res.status(404).json({ message: 'Hardware not found' });
     }

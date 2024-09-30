@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Trash2, Plus, LogOut, RefreshCw } from "lucide-react";
+import { Loader2, Trash2, Plus, LogOut, RefreshCw, Edit, BarChart2, Calendar } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { useToast } from "./ui/use-toast";
-import { getHardware, deleteHardware } from '../services/api';
+import { getHardware, deleteHardware, updateHardware } from '../services/api';
 import AddHardwareForm from './AddHardwareForm';
 import {
   AlertDialog,
@@ -20,13 +20,18 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "./ui/alert-dialog.js";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 export default function HardwareList({ onLogout }) {
   const [hardware, setHardware] = useState([]);
   const [filteredHardware, setFilteredHardware] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingHardware, setEditingHardware] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [sortBy, setSortBy] = useState('name');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -34,14 +39,24 @@ export default function HardwareList({ onLogout }) {
   }, []);
 
   useEffect(() => {
-    setFilteredHardware(
-      hardware.filter(item =>
-        Object.values(item).some(val =>
-          val.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        )
+    let filtered = hardware.filter(item =>
+      Object.values(item).some(val =>
+        val.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-  }, [searchTerm, hardware]);
+
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(item => item.status.toLowerCase() === filterStatus.toLowerCase());
+    }
+
+    filtered.sort((a, b) => {
+      if (a[sortBy] < b[sortBy]) return -1;
+      if (a[sortBy] > b[sortBy]) return 1;
+      return 0;
+    });
+
+    setFilteredHardware(filtered);
+  }, [searchTerm, hardware, filterStatus, sortBy]);
 
   const fetchHardware = async () => {
     try {
@@ -60,19 +75,15 @@ export default function HardwareList({ onLogout }) {
     }
   };
 
-  const handleAdd = () => {
-    fetchHardware();
+  const handleAdd = (newHardware) => {
+    setHardware(prev => [...prev, newHardware]);
     setIsAdding(false);
-    toast({
-      title: "Success",
-      description: "Hardware added successfully.",
-    });
   };
 
   const handleDelete = async (id) => {
     try {
       await deleteHardware(id);
-      fetchHardware();
+      setHardware(prev => prev.filter(item => item._id !== id));
       toast({
         title: "Success",
         description: "Hardware deleted successfully.",
@@ -87,6 +98,35 @@ export default function HardwareList({ onLogout }) {
     }
   };
 
+  const handleUpdateStatus = async (id, currentStatus) => {
+    const newStatus = currentStatus === 'Maintenance' ? 'Active' : 'Maintenance';
+    try {
+      const updatedHardware = await updateHardware(id, { status: newStatus });
+      setHardware(prev => prev.map(item => item._id === id ? updatedHardware : item));
+      toast({
+        title: "Success",
+        description: `Hardware status updated to ${newStatus}.`,
+      });
+    } catch (error) {
+      console.error('Error updating hardware status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update hardware status. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEdit = (item) => {
+    setEditingHardware(item);
+    setIsEditing(true);
+  };
+
+  const handleEditSubmit = (updatedHardware) => {
+    setHardware(prev => prev.map(item => item._id === updatedHardware._id ? updatedHardware : item));
+    setIsEditing(false);
+  };
+
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case 'active':
@@ -95,8 +135,10 @@ export default function HardwareList({ onLogout }) {
         return 'bg-red-100 text-red-800';
       case 'maintenance':
         return 'bg-yellow-100 text-yellow-800';
-      default:
+      case 'out of service':
         return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-blue-100 text-blue-800';
     }
   };
 
@@ -108,19 +150,18 @@ export default function HardwareList({ onLogout }) {
       className="p-8 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen"
     >
       <Card className="w-full max-w-6xl mx-auto">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-  <CardTitle className="text-3xl font-bold text-blue-800">
-    MP Police Hardware Inventory
-  </CardTitle>
-  <Button 
-    onClick={onLogout} 
-    variant="outline"
-    className="border-red-500 text-red-500 hover:bg-red-50 transition duration-200 ml-auto"
-  >
-    <LogOut className="mr-2 h-4 w-4" /> Logout
-  </Button>
-</CardHeader>
-
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-3xl font-bold text-blue-800">
+            MP Police Hardware Inventory
+          </CardTitle>
+          <Button 
+            onClick={onLogout} 
+            variant="outline"
+            className="border-red-500 text-red-500 hover:bg-red-50 transition duration-200 ml-auto"
+          >
+            <LogOut className="mr-2 h-4 w-4" /> Logout
+          </Button>
+        </CardHeader>
 
         <CardContent>
           <div className="flex justify-between items-center mb-6">
@@ -138,6 +179,29 @@ export default function HardwareList({ onLogout }) {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="border rounded-lg p-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                  <SelectItem value="Maintenance">Maintenance</SelectItem>
+                  <SelectItem value="Out of Service">Out of Service</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="type">Type</SelectItem>
+                  <SelectItem value="status">Status</SelectItem>
+                  <SelectItem value="location">Location</SelectItem>
+                </SelectContent>
+              </Select>
               <Button
                 variant="outline"
                 onClick={fetchHardware}
@@ -151,13 +215,52 @@ export default function HardwareList({ onLogout }) {
           <AnimatePresence>
             {isAdding && (
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                key="add-form"
+                initial={{
+                  opacity: 0,
+                  y: -20
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -20
+                }}
+                transition={{
+                  duration: 0.3
+                }}
                 className="mb-6"
               >
-                <AddHardwareForm onAdd={handleAdd} />
+                <AddHardwareForm onAdd={handleAdd} onClose={() => setIsAdding(false)} />
+              </motion.div>
+            )}
+            {isEditing && (
+              <motion.div
+                key="edit-form"
+                initial={{
+                  opacity: 0,
+                  y: -20
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0
+                }}
+                exit={{
+                  opacity: 0,
+                  y: -20
+                }}
+                transition={{
+                  duration: 0.3
+                }}
+                className="mb-6"
+              >
+                <AddHardwareForm 
+                  onAdd={handleEditSubmit} 
+                  onClose={() => setIsEditing(false)} 
+                  initialData={editingHardware}
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -197,27 +300,39 @@ export default function HardwareList({ onLogout }) {
                       </TableCell>
                       <TableCell>{item.location}</TableCell>
                       <TableCell>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the hardware item.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(item._id)}>
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <div className="flex space-x-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleUpdateStatus(item._id, item.status)}
+                          >
+                            <Calendar className="h-4 w-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handleEdit(item)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete the hardware item.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(item._id)}>
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
