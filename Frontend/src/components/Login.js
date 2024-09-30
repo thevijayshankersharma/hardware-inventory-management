@@ -6,7 +6,7 @@ import { Input } from "./ui/input";
 import { login } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Loader2, LogIn, Eye, EyeOff, Shield } from "lucide-react";
+import { Loader2, LogIn, Eye, EyeOff, Shield, Home } from "lucide-react";
 import { useToast } from "./ui/use-toast";
 import { Card } from "./ui/card";
 
@@ -38,11 +38,13 @@ export default function Login({ onLogin }) {
         description: "You have successfully logged in.",
       });
     } catch (error) {
-      console.error("Login failed:", error);
+      const errorMessage =
+        error.response?.status === 401
+          ? "Invalid username or password."
+          : "An unexpected error occurred. Please try again.";
       toast({
         title: "Error",
-        description:
-          "Login failed. Please check your credentials and try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -64,9 +66,17 @@ export default function Login({ onLogin }) {
           transition={{ duration: 0.3 }}
           className="space-y-6"
         >
-          <div className="flex justify-center mb-8">
-            <Shield className="h-12 w-12 text-blue-600" />
+          <div className="flex flex-col items-center mb-8 relative">
+            <Shield className="h-12 w-12 text-blue-600 mb-4" />
+            <button
+              className="absolute right-0 top-0 flex items-center bg-white border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition duration-200 p-2 rounded-full shadow-lg"
+              onClick={() => navigate("/")}
+            >
+              <Home className="mr-2 h-5 w-5" />
+              Home
+            </button>
           </div>
+
           <h2 className="text-3xl font-bold text-center text-blue-800 mb-6">
             Login to MP Police Hardware Inventory
           </h2>
@@ -86,6 +96,7 @@ export default function Login({ onLogin }) {
                 onChange={handleChange}
                 placeholder="Enter your username"
                 required
+                disabled={loading}
                 className="w-full"
               />
             </div>
@@ -105,12 +116,15 @@ export default function Login({ onLogin }) {
                   onChange={handleChange}
                   placeholder="Enter your password"
                   required
+                  disabled={loading}
                   className="w-full"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  disabled={loading}
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5 text-gray-500" />
