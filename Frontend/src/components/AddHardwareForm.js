@@ -10,13 +10,15 @@ import { Label } from "./ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export default function AddHardwareForm({ onAdd, onClose, initialData = null }) {
-  const [hardware, setHardware] = useState(initialData || {
+  const initialFormState = {
     name: '',
     type: '',
     serialNumber: '',
     status: 'Available',
     location: ''
-  });
+  };
+
+  const [hardware, setHardware] = useState(initialData || initialFormState);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -52,6 +54,10 @@ export default function AddHardwareForm({ onAdd, onClose, initialData = null }) 
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleClear = () => {
+    setHardware(initialFormState); // Reset form fields to initial state
   };
 
   return (
@@ -164,11 +170,11 @@ export default function AddHardwareForm({ onAdd, onClose, initialData = null }) 
             </Button>
             <Button 
               type="button" 
-              onClick={onClose} 
+              onClick={handleClear} 
               variant="outline"
               className="flex-1"
             >
-              Cancel
+              Clear
             </Button>
           </div>
         </form>
