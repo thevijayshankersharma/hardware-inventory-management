@@ -4,15 +4,16 @@ import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { register } from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Loader2, UserPlus, Eye, EyeOff } from "lucide-react"; // Import Eye and EyeOff icons
+import { Loader2, UserPlus, Eye, EyeOff, Shield } from "lucide-react";
 import { useToast } from "./ui/use-toast";
+import { Card } from "./ui/card";
 
 export default function Register() {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -30,7 +31,7 @@ export default function Register() {
         title: "Success",
         description: "Registration successful! You can now log in.",
       });
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Registration failed:", error);
       toast({
@@ -48,16 +49,19 @@ export default function Register() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4"
+      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-200 p-4"
     >
-      <div className="w-full max-w-md">
+      <Card className="w-full max-w-md p-8 bg-white/80 backdrop-blur-sm shadow-xl rounded-xl">
         <motion.div
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.3 }}
-          className="bg-white p-8 rounded-lg shadow-2xl space-y-6"
+          className="space-y-6"
         >
-          <h2 className="text-3xl font-bold text-center text-blue-800 mb-6">Register</h2>
+          <div className="flex justify-center mb-8">
+            <Shield className="h-12 w-12 text-blue-600" />
+          </div>
+          <h2 className="text-3xl font-bold text-center text-blue-800 mb-6">Register for MP Police Hardware Inventory</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">Username</label>
@@ -77,7 +81,7 @@ export default function Register() {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"} // Toggle password visibility
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={credentials.password}
                   onChange={handleChange}
@@ -87,7 +91,7 @@ export default function Register() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                  onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 flex items-center pr-3"
                 >
                   {showPassword ? (
@@ -101,7 +105,7 @@ export default function Register() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200"
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-200"
             >
               {loading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -113,16 +117,15 @@ export default function Register() {
           </form>
           <p className="text-sm text-center text-gray-600">
             Already have an account?{" "}
-            <Button
-              onClick={() => navigate('/login')}
-              variant="link"
-              className="p-0 h-auto font-medium text-blue-600 hover:underline"
+            <Link
+              to="/login"
+              className="text-blue-600 hover:underline font-medium"
             >
-              Login
-            </Button>
+              Login here
+            </Link>
           </p>
         </motion.div>
-      </div>
+      </Card>
     </motion.div>
   );
 }

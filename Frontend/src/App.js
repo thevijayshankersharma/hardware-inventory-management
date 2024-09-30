@@ -4,7 +4,6 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
 import HardwareList from './components/HardwareList';
-import BarcodeScanner from './components/BarcodeScanner';
 import { ToastProvider } from './components/ui/use-toast';
 
 function App() {

@@ -6,8 +6,9 @@ import { Input } from "./ui/input";
 import { login } from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Loader2, LogIn, Eye, EyeOff } from "lucide-react"; // Import Eye and EyeOff icons
+import { Loader2, LogIn, Eye, EyeOff, Shield } from "lucide-react";
 import { useToast } from "./ui/use-toast";
+import { Card } from "./ui/card";
 
 export default function Login({ onLogin }) {
   const [credentials, setCredentials] = useState({
@@ -15,7 +16,7 @@ export default function Login({ onLogin }) {
     password: "",
   });
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -54,17 +55,20 @@ export default function Login({ onLogin }) {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100"
+      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-200 p-4"
     >
-      <div className="w-full max-w-md">
+      <Card className="w-full max-w-md p-8 bg-white/80 backdrop-blur-sm shadow-xl rounded-xl">
         <motion.div
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.3 }}
-          className="bg-white p-8 rounded-lg shadow-2xl space-y-6"
+          className="space-y-6"
         >
+          <div className="flex justify-center mb-8">
+            <Shield className="h-12 w-12 text-blue-600" />
+          </div>
           <h2 className="text-3xl font-bold text-center text-blue-800 mb-6">
-            Login
+            Login to MP Police Hardware Inventory
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -95,7 +99,7 @@ export default function Login({ onLogin }) {
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"} // Toggle password visibility
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={credentials.password}
                   onChange={handleChange}
@@ -105,7 +109,7 @@ export default function Login({ onLogin }) {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                  onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 flex items-center pr-3"
                 >
                   {showPassword ? (
@@ -119,7 +123,7 @@ export default function Login({ onLogin }) {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-200"
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-200"
             >
               {loading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -139,7 +143,7 @@ export default function Login({ onLogin }) {
             </Link>
           </p>
         </motion.div>
-      </div>
+      </Card>
     </motion.div>
   );
 }

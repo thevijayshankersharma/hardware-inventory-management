@@ -4,10 +4,10 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Card } from "./ui/card"
-import { Shield, Database, BarChart2, Zap, ChevronRight, ArrowRight } from "lucide-react"
+import { Shield, Database, BarChart2, Zap, ChevronRight, ArrowRight, Clipboard, Clock } from "lucide-react"
 import { motion } from "framer-motion"
 
-export default function Home() {
+export default function Component() {
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -53,14 +53,14 @@ export default function Home() {
               className="mt-6 max-w-md mx-auto text-lg text-gray-600 sm:text-xl md:mt-8 md:max-w-3xl"
               variants={fadeInUp}
             >
-              Empower your department with cutting-edge technology for seamless hardware tracking and management.
+              Empower your department with cutting-edge technology for seamless hardware tracking, efficient allocation, and enhanced operational readiness.
             </motion.p>
             <motion.div 
               className="mt-10 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6"
               variants={fadeInUp}
             >
               <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
-                <Link to="/login">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <Link to="/login" aria-label="Get started with the inventory management system">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button
                 asChild
@@ -68,7 +68,7 @@ export default function Home() {
                 variant="outline"
                 className="border-blue-600 text-blue-600 hover:bg-blue-50 shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
               >
-                <Link to="/register">Learn More <ChevronRight className="ml-2 h-4 w-4" /></Link>
+                <Link to="/about" aria-label="Learn more about the inventory management system">Learn More <ChevronRight className="ml-2 h-4 w-4" /></Link>
               </Button>
             </motion.div>
           </motion.div>
@@ -84,25 +84,37 @@ export default function Home() {
                 icon: <Shield className="h-12 w-12 text-blue-600" />,
                 title: "Secure",
                 description: "Protect sensitive hardware information",
-                content: "Advanced encryption and access controls safeguard your inventory data."
+                content: "Advanced encryption and access controls safeguard your inventory data, ensuring compliance with regulatory requirements."
               },
               {
                 icon: <Database className="h-12 w-12 text-blue-600" />,
                 title: "Centralized",
                 description: "Manage all hardware assets",
-                content: "A unified platform for comprehensive hardware lifecycle management."
+                content: "A unified platform for comprehensive hardware lifecycle management, from acquisition to disposal."
               },
               {
                 icon: <BarChart2 className="h-12 w-12 text-blue-600" />,
                 title: "Insightful",
                 description: "Gain valuable insights",
-                content: "Real-time analytics and customizable reports for informed decision-making."
+                content: "Real-time analytics and customizable reports for informed decision-making and resource optimization."
               },
               {
                 icon: <Zap className="h-12 w-12 text-blue-600" />,
                 title: "Efficient",
                 description: "Streamline operations",
-                content: "Automated workflows and quick barcode scanning for maximum efficiency."
+                content: "Automated workflows and quick barcode scanning for maximum efficiency in tracking and managing assets."
+              },
+              {
+                icon: <Clipboard className="h-12 w-12 text-blue-600" />,
+                title: "Auditable",
+                description: "Maintain accurate records",
+                content: "Regular audits and updates ensure your inventory data is always accurate and up-to-date."
+              },
+              {
+                icon: <Clock className="h-12 w-12 text-blue-600" />,
+                title: "Lifecycle Management",
+                description: "Track asset lifecycles",
+                content: "Monitor the entire lifecycle of hardware assets, from procurement to retirement, optimizing utilization and maintenance."
               }
             ].map((card, index) => (
               <motion.div key={index} variants={fadeInUp}>
@@ -126,13 +138,13 @@ export default function Home() {
           >
             <Card className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-2xl p-8 rounded-xl transition-all duration-300 ease-in-out transform hover:scale-105">
               <h2 className="text-3xl font-bold mb-4">Ready to revolutionize your inventory management?</h2>
-              <p className="text-xl mb-6">Join the Madhya Pradesh Police Department in embracing cutting-edge technology for efficient asset tracking.</p>
+              <p className="text-xl mb-6">Join the Madhya Pradesh Police Department in embracing cutting-edge technology for efficient asset tracking and resource optimization.</p>
               <Button asChild size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50 transition-all duration-300 ease-in-out transform hover:scale-105">
-                <Link to="/register">Create an Account <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <Link to="/register" aria-label="Create an account for the inventory management system">Create an Account <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <p className="mt-6 text-sm">
                 Already have an account?{" "}
-                <Link to="/login" className="font-medium underline hover:text-blue-100 transition-colors duration-300">
+                <Link to="/login" className="font-medium underline hover:text-blue-100 transition-colors duration-300" aria-label="Log in to the inventory management system">
                   Log in
                 </Link>
               </p>
@@ -145,10 +157,10 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm">&copy; {new Date().getFullYear()} MP Police. All rights reserved.</p>
             <div className="mt-4 md:mt-0 space-x-4">
-              <Link to="/privacy" className="text-sm hover:underline transition-colors duration-300">
+              <Link to="/privacy" className="text-sm hover:underline transition-colors duration-300" aria-label="View privacy policy">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-sm hover:underline transition-colors duration-300">
+              <Link to="/terms" className="text-sm hover:underline transition-colors duration-300" aria-label="View terms of service">
                 Terms of Service
               </Link>
             </div>
