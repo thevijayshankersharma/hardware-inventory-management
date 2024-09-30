@@ -32,7 +32,7 @@ export default function Login({ onLogin }) {
       const data = await login(credentials);
       localStorage.setItem("token", data.token);
       onLogin();
-      navigate("/hardware");
+      navigate("/dashboard");
       toast({
         title: "Success",
         description: "You have successfully logged in.",

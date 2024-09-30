@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Home from './components/Home';
+import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Register from './components/Register';
+import Dashboard from './components/Dashboard';
 import HardwareList from './components/HardwareList';
 import { ToastProvider } from './components/ui/use-toast';
 
@@ -31,9 +32,14 @@ function App() {
         <div className="flex flex-col min-h-screen">
           <main className="flex-grow">
             <Routes>
-              <Route path="/" element={<Home isLoggedIn={isLoggedIn} onLogout={handleLogout} />} />
+              <Route path="/" element={<LandingPage isLoggedIn={isLoggedIn} onLogout={handleLogout} />} />
               <Route path="/login" element={<Login onLogin={handleLogin} />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/dashboard" element={isLoggedIn ? (
+                <Dashboard onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/login" replace />
+              )} />
               <Route path="/hardware" element={isLoggedIn ? (
                 <HardwareList onLogout={handleLogout} />
               ) : (
