@@ -11,7 +11,12 @@ import {
   UserPlus,
   AlertTriangle,
   Clock,
-  LogOut
+  LogOut,
+  Share2,
+  Activity,
+  Shield,
+  DollarSign,
+  FileCheck
 } from "lucide-react";
 
 const functionalities = [
@@ -23,6 +28,11 @@ const functionalities = [
   { title: "User Management", icon: UserPlus, link: "/user-management", description: "Manage system users and permissions" },
   { title: "Alerts", icon: AlertTriangle, link: "/alerts", description: "View system alerts and notifications" },
   { title: "Lifecycle Management", icon: Clock, link: "/lifecycle", description: "Track hardware lifecycle and plan replacements" },
+  { title: "Resource Allocation", icon: Share2, link: "/resource-allocation", description: "Efficiently allocate hardware resources" },
+  { title: "Utilization Monitoring", icon: Activity, link: "/utilization", description: "Monitor hardware utilization rates" },
+  { title: "Compliance Tracking", icon: FileCheck, link: "/compliance", description: "Track compliance with regulations and policies" },
+  { title: "Cost Analysis", icon: DollarSign, link: "/cost-analysis", description: "Analyze costs and identify savings opportunities" },
+  { title: "Security Management", icon: Shield, link: "/security", description: "Manage hardware security and mitigate risks" },
 ];
 
 export default function Dashboard({ onLogout }) {
